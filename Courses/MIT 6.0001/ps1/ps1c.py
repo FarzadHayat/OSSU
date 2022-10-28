@@ -29,7 +29,7 @@ def bisearch(salary):
     lower, upper, portion_saved, steps = 0, 10000, 5000, 1
     while (True):
         savings = savings_36(salary, portion_saved)
-        if (abs(savings - DOWN_PAYMENT) <= 100):
+        if (abs(savings - DOWN_PAYMENT) <= EPSILON):
             return portion_saved, steps
         lower, upper, portion_saved, steps = bisearch_one_step(savings, lower, upper, portion_saved, steps)
 
@@ -53,6 +53,7 @@ def tests():
 
 if __name__ == "__main__":
     # constants
+    EPSILON = 100
     ANNUAL_RETURN = 0.04
     SEMI_ANNUAL_RAISE = 0.07
     PORTION_DOWN_PAYMENT = 0.25
