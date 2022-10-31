@@ -1,7 +1,6 @@
 # Problem Set 2, hangman.py
 # Name: Farzad Hayatbakhsh
 # Start date: 28/10/2022
-# Time spent: 
 
 # Hangman Game
 # -----------------------------------
