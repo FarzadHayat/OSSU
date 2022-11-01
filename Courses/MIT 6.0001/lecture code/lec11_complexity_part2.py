@@ -5,6 +5,7 @@ Created on Sun Oct  9 12:13:13 2016
 @author: ericgrimson
 """
 
+# O(log n)
 def bisect_search2(L, e):
     def bisect_search_helper(L, e, low, high):
         print('low: ' + str(low) + '; high: ' + str(high))  #added to visualize
@@ -32,6 +33,7 @@ for i in range(100):
 print(bisect_search2(testList, 76))
 
 
+# O(2^n)
 def genSubsets(L):
     res = []
     if len(L) == 0:

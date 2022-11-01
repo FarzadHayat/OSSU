@@ -1,9 +1,9 @@
 # Problem Set 4C
-# Name: <your name here>
-# Collaborators:
-# Time Spent: x:xx
+# Name: Farzad Hayatbakhsh
+# Start date: 1/11/2022
 
 import string
+from turtle import circle
 from ps4a import get_permutations
 
 ### HELPER CODE ###
@@ -70,7 +70,8 @@ class SubMessage(object):
             self.message_text (string, determined by input text)
             self.valid_words (list, determined using helper function load_words)
         '''
-        pass #delete this line and replace with your code here
+        self.message_text = text
+        self.valid_words = load_words(WORDLIST_FILENAME)
     
     def get_message_text(self):
         '''
@@ -78,7 +79,7 @@ class SubMessage(object):
         
         Returns: self.message_text
         '''
-        pass #delete this line and replace with your code here
+        return self.message_text
 
     def get_valid_words(self):
         '''
@@ -87,7 +88,7 @@ class SubMessage(object):
         
         Returns: a COPY of self.valid_words
         '''
-        pass #delete this line and replace with your code here
+        return self.valid_words.copy()
                 
     def build_transpose_dict(self, vowels_permutation):
         '''
@@ -108,8 +109,20 @@ class SubMessage(object):
         Returns: a dictionary mapping a letter (string) to 
                  another letter (string). 
         '''
-        
-        pass #delete this line and replace with your code here
+        # create empty transpose dictionary
+        t_dict = dict()
+        # concatenate the vowel permutations along with the uppercase versions
+        perms = vowels_permutation + vowels_permutation.upper()
+        # loop the concatenation of the lowercase and uppercase vowels
+        for i,vowel in enumerate(VOWELS_LOWER + VOWELS_UPPER):
+            # add the permutation mapping to the dictionary
+            t_dict[vowel] = perms[i]
+        # loop the lowercase and uppercase consonants
+        for letter in (CONSONANTS_LOWER + CONSONANTS_UPPER):
+            # add the mapping to the dictionary (no permutation)
+            t_dict[letter] = letter
+        # return the dictionary
+        return t_dict
     
     def apply_transpose(self, transpose_dict):
         '''
@@ -118,8 +131,13 @@ class SubMessage(object):
         Returns: an encrypted version of the message text, based 
         on the dictionary
         '''
-        
-        pass #delete this line and replace with your code here
+        new_message = ''
+        for char in self.message_text:
+            if char in transpose_dict:
+                new_message += transpose_dict[char]
+            else:
+                new_message += char
+        return new_message
         
 class EncryptedSubMessage(SubMessage):
     def __init__(self, text):
@@ -132,7 +150,7 @@ class EncryptedSubMessage(SubMessage):
             self.message_text (string, determined by input text)
             self.valid_words (list, determined using helper function load_words)
         '''
-        pass #delete this line and replace with your code here
+        SubMessage.__init__(self, text)
 
     def decrypt_message(self):
         '''
@@ -152,7 +170,40 @@ class EncryptedSubMessage(SubMessage):
         
         Hint: use your function from Part 4A
         '''
-        pass #delete this line and replace with your code here
+        # create empty dictionary used to map the perm string to the number of real words in the decryption
+        perm_dict = dict()
+        # use the function in ps4a.py to create a list of the permutations for the vowels (aeiou)
+        perm_list = get_permutations('aeiou')
+        # loop through the permutations list:
+        for perm in perm_list:
+            # create variable real words and set it to 0
+            num_words = 0
+            # build the transpose dictionary
+            t_dict = self.build_transpose_dict(perm)
+            # get a decrypted message by encrypting the message text using the transpose dictionary
+            decrypted_message = self.apply_transpose(t_dict)
+            # loop through the words in the decrypted message
+            for word in decrypted_message.split():
+                # if the word is a real word
+                if is_word(self.get_valid_words(), word):
+                    # add one to real words
+                    num_words += 1
+            # add key to the dictionary mapping from the perm string to number of real words
+            perm_dict[perm] = num_words
+        # if the best permutation has one or more real words
+        if max(perm_dict.values()) > 0:
+            # find the perm in the dictionary with the largest number of real words
+            best_perm = max(perm_dict, key=perm_dict.get)
+            # build the transpose dictionary
+            t_dict = self.build_transpose_dict(best_perm)
+            # get the decrypted message by using the best permutation
+            new_message = self.apply_transpose(t_dict)
+            # return the shift value and the decrypted message in a tuple
+            return new_message
+        # else (the best permutation didn't have one or more real words)
+        else:
+            # return the original message
+            return self.get_message_text()
     
 
 if __name__ == '__main__':
@@ -166,5 +217,25 @@ if __name__ == '__main__':
     print("Actual encryption:", message.apply_transpose(enc_dict))
     enc_message = EncryptedSubMessage(message.apply_transpose(enc_dict))
     print("Decrypted message:", enc_message.decrypt_message())
-     
-    #TODO: WRITE YOUR TEST CASES HERE
+    
+    print('-'*20)
+
+    # My test cases
+    my_message = SubMessage('The brown fox jumped over the lazy dog.')
+    my_perm = 'eioua'
+    my_dict = my_message.build_transpose_dict(my_perm)
+    print("Original message:", my_message.get_message_text(), "Permutation:", my_perm)
+    print("Expected encryption:", "Thi bruwn fux jampid uvir thi lezy dug.")
+    print("Actual encryption:", my_message.apply_transpose(my_dict))
+    encrypted_message = EncryptedSubMessage(my_message.apply_transpose(my_dict))
+    print("Decrypted message:", encrypted_message.decrypt_message())
+    
+    print('-'*20)
+
+    other_message = EncryptedSubMessage('Holle thoro, Gonoril Koneba!')
+    print("Decrypted message:", other_message.decrypt_message())
+
+    print('-'*20)
+
+    original_message = EncryptedSubMessage("aeiou")
+    print("Decrypted message:", original_message.decrypt_message())
