@@ -198,6 +198,10 @@ class TitleTrigger(PhraseTrigger):
         """
         super().__init__(phrase)
     
+    def __repr__(self):
+        """ returns a string representation of the object. """
+        return f"TitleTrigger('{self.phrase}')"
+
     def evaluate(self, story):
         """
         Evaluates whether self.phrase is in the given story's title.
@@ -222,6 +226,10 @@ class DescriptionTrigger(PhraseTrigger):
         """
         super().__init__(phrase)
     
+    def __repr__(self):
+        """ returns a string representation of the object. """
+        return f"DescriptionTrigger('{self.phrase}')"
+
     def evaluate(self, story):
         """
         Evaluates whether self.phrase is in the given story's description.
@@ -263,6 +271,10 @@ class BeforeTrigger(TimeTrigger):
         """
         super().__init__(time_string)
     
+    def __repr__(self):
+        """ returns a string representation of the object. """
+        return f"BeforeTrigger('{self.time}')"
+
     def evaluate(self, story):
         """
         Evaluates whether the given story was published strictly before self.time.
@@ -286,6 +298,10 @@ class AfterTrigger(TimeTrigger):
         """
         super().__init__(time_string)
     
+    def __repr__(self):
+        """ returns a string representation of the object. """
+        return f"AfterTrigger('{self.time}')"
+
     def evaluate(self, story):
         """
         Evaluates whether the given story was published strictly after self.time.
@@ -297,13 +313,93 @@ class AfterTrigger(TimeTrigger):
 # COMPOSITE TRIGGERS
 
 # Problem 7
-# TODO: NotTrigger
+class NotTrigger(Trigger):
+    """ The NotTrigger class is used to evaluate the negation of a Trigger on a news story. """
+    def __init__(self, trig):
+        """
+        Creates a new NotTrigger object.
+        
+        Attributes:
+            self.trig (Trigger)
+        
+        Methods:
+            self.evaluate(self, story (NewsStory))
+                returns True/False    
+        """
+        self.trig = trig
+    
+    def __repr__(self):
+        """ returns a string representation of the object. """
+        return f"NotTrigger({self.trig})"
+
+    def evaluate(self, story):
+        """
+        Evaluates the negation of whether the trigger fires on the given news story.
+        
+        returns True/False
+        """
+        return not self.trig.evaluate(story)
+
 
 # Problem 8
-# TODO: AndTrigger
+class AndTrigger(Trigger):
+    """ The AndTrigger class is used to evaluate if both Triggers fire on a news story. """
+    def __init__(self, trig1, trig2):
+        """
+        Creates a new AndTrigger object.
+        
+        Attributes:
+            self.trig1 (Trigger)
+            self.trig2 (Trigger)
+        
+        Methods:
+            self.evaluate(self, story (NewsStory))
+                returns True/False    
+        """
+        self.trig1 = trig1
+        self.trig2 = trig2
+    
+    def __repr__(self):
+        """ returns a string representation of the object. """
+        return f"AndTrigger({self.trig1}, {self.trig2})"
+
+    def evaluate(self, story):
+        """
+        Evaluates whether both of the triggers fire on the given news story.
+        
+        returns True/False
+        """
+        return self.trig1.evaluate(story) and self.trig2.evaluate(story)
 
 # Problem 9
-# TODO: OrTrigger
+class OrTrigger(Trigger):
+    """ The OrTrigger class is used to evaluate if one or both Triggers fire on a news story. """
+    def __init__(self, trig1, trig2):
+        """
+        Creates a new OrTrigger object.
+        
+        Attributes:
+            self.trig1 (Trigger)
+            self.trig2 (Trigger)
+        
+        Methods:
+            self.evaluate(self, story (NewsStory))
+                returns True/False    
+        """
+        self.trig1 = trig1
+        self.trig2 = trig2
+    
+    def __repr__(self):
+        """ returns a string representation of the object. """
+        return f"OrTrigger({self.trig1}, {self.trig2})"
+
+    def evaluate(self, story):
+        """
+        Evaluates whether one or both of the triggers fire on the given news story.
+        
+        returns True/False
+        """
+        return self.trig1.evaluate(story) or self.trig2.evaluate(story)
 
 
 #======================
