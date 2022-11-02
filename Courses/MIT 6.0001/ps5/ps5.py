@@ -53,8 +53,80 @@ def process(url):
 #======================
 
 # Problem 1
+class NewsStory(object):
+    """ The NewsStory class stores information about a single a news story. """
+    def __init__(self, guid, title, description, link, pubdate):
+        """
+        Creates a new NewsStory Object.
+        
+        Attributes:
+            guid (int) i.e globally unique identifier
+            title (string)
+            description (string)
+            link (string)
+            pubdate (datetime)
+        
+        Methods:
+            get_guid(self)
+                returns self.guid
+            
+            get_title(self)
+                returns self.title
+            
+            get_description(self)
+                returns self.description
+            
+            get_link(self)
+                returns self.link
+            
+            get pubdate
+                returns self.pubdate
+        """
+        self.guid = guid
+        self.title = title
+        self.description = description
+        self.link = link
+        self.pubdate = pubdate
+    
+    def get_guid(self):
+        """
+        Used to safely access self.guid outside of the class
+        
+        returns self.guid
+        """
+        return self.guid
 
-# TODO: NewsStory
+    def get_title(self):
+        """
+        Used to safely access self.title outside of the class
+        
+        returns self.title
+        """
+        return self.title
+
+    def get_description(self):
+        """
+        Used to safely access self.description outside of the class
+        
+        returns self.description
+        """
+        return self.description
+
+    def get_link(self):
+        """
+        Used to safely access self.link outside of the class
+        
+        returns self.link
+        """
+        return self.link
+
+    def get_pubdate(self):
+        """
+        Used to safely access self.pubdate outside of the class
+        
+        returns self.pubdate
+        """
+        return self.pubdate
 
 
 #======================
@@ -73,7 +145,66 @@ class Trigger(object):
 # PHRASE TRIGGERS
 
 # Problem 2
-# TODO: PhraseTrigger
+class PhraseTrigger(Trigger):
+    """ The PhraseTrigger abstract class is a subclass of the Trigger class. """
+    def __init__(self, phrase):
+        """
+        Creates a new PhraseTrigger object.
+
+        Attributes:
+            self.phrase (string, lowercase)
+        
+        Methods:
+            is_phrase_in(self, text)
+                returns True/False
+        """
+        self.phrase = phrase.lower()
+
+    def is_phrase_in(self, text):
+        """
+        Evaluates whether self.phrase is in the given text or not.
+        Not case sensitive. Ignores punctuation.
+        Phrase must be found in the same order of words as self.phrase.
+
+        return True/False
+        """
+        text_copy = [' ' if char in string.punctuation \
+                    else char.lower() for char in text]
+        word_list = ''.join(text_copy).split()
+
+        phrase_list = self.phrase.split()
+        first = phrase_list[0]
+
+        start = -1
+        for first in word_list:
+            start = word_list.index(first, start + 1)
+            if phrase_list == word_list[start:start+len(phrase_list)]:
+                return True
+        return False
+
+# my_trigger = PhraseTrigger('purple cow')
+# good_texts = [
+#     'PURPLE COW',
+#     'The purple cow is soft and cuddly.',
+#     'The farmer owns a really PURPLE cow.',
+#     'Purple!!! Cow!!!',
+#     'purple@#$%cow',
+#     'Did you see a purple     cow?'
+# ]
+# bad_texts = [
+#     'Purple cows are cool!',
+#     'The purple blob over there is a cow.',
+#     'How now brown cow.',
+#     'Cow!!! Purple!!!',
+#     'purplecowpurplecowpurplecow'
+# ]
+# print("Good texts:")
+# for i,text in enumerate(good_texts):
+#     print(i+1, my_trigger.is_phrase_in(text) == True)
+# print("")
+# print("Bad tests:")
+# for i,text in enumerate(bad_texts):
+#     print(i+1, my_trigger.is_phrase_in(text) == False)
 
 # Problem 3
 # TODO: TitleTrigger

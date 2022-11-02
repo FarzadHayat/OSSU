@@ -5,6 +5,7 @@ Created on Wed Oct 19 09:21:39 2016
 @author: ericgrimson
 """
 
+# O(n^2)
 def bubble_sort(L):
     swap = False
     while not swap:
@@ -23,7 +24,7 @@ print('')
 print(bubble_sort(testList))
 print(testList)
 
-
+# O(n^2)
 def selection_sort(L):
     suffixSt = 0
     while suffixSt != len(L):
@@ -39,7 +40,7 @@ print('')
 print(selection_sort(testList))
 print(testList)
 
-
+# O(n log n)
 def merge(left, right):
     result = []
     i,j = 0,0
@@ -71,6 +72,6 @@ def merge_sort(L):
         
 testList = [1,3,5,7,2,6,25,18,13]
 
-#print('')
-#print(merge_sort(testList))
+print('')
+print(merge_sort(testList))
 
