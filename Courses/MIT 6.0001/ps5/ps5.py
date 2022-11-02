@@ -182,35 +182,53 @@ class PhraseTrigger(Trigger):
                 return True
         return False
 
-# my_trigger = PhraseTrigger('purple cow')
-# good_texts = [
-#     'PURPLE COW',
-#     'The purple cow is soft and cuddly.',
-#     'The farmer owns a really PURPLE cow.',
-#     'Purple!!! Cow!!!',
-#     'purple@#$%cow',
-#     'Did you see a purple     cow?'
-# ]
-# bad_texts = [
-#     'Purple cows are cool!',
-#     'The purple blob over there is a cow.',
-#     'How now brown cow.',
-#     'Cow!!! Purple!!!',
-#     'purplecowpurplecowpurplecow'
-# ]
-# print("Good texts:")
-# for i,text in enumerate(good_texts):
-#     print(i+1, my_trigger.is_phrase_in(text) == True)
-# print("")
-# print("Bad tests:")
-# for i,text in enumerate(bad_texts):
-#     print(i+1, my_trigger.is_phrase_in(text) == False)
-
 # Problem 3
-# TODO: TitleTrigger
+class TitleTrigger(PhraseTrigger):
+    """ The TitleTrigger class triggers if a given phrase is in the title of a news story. """
+    def __init__(self, phrase):
+        """
+        Creates a new TitleTrigger object.
+        
+        Attributes:
+            self.phrase (string, lowercase)
+        
+        Methods:
+            evaluate(self, story)
+                returns True/False
+        """
+        super().__init__(phrase)
+    
+    def evaluate(self, story):
+        """
+        Evaluates whether self.phrase is in the given story's title.
+        
+        returns True/False
+        """
+        return self.is_phrase_in(story.get_title())
 
 # Problem 4
-# TODO: DescriptionTrigger
+class DescriptionTrigger(PhraseTrigger):
+    """ The DescriptionTrigger class triggers if a given phrase is in the description of a news story. """
+    def __init__(self, phrase):
+        """
+        Creates a new DescriptionTrigger object.
+        
+        Attributes:
+            self.phrase (string, lowercase)
+        
+        Methods:
+            evaluate(self, story)
+                returns True/False
+        """
+        super().__init__(phrase)
+    
+    def evaluate(self, story):
+        """
+        Evaluates whether self.phrase is in the given story's description.
+        
+        returns True/False
+        """
+        return self.is_phrase_in(story.get_description())
 
 # TIME TRIGGERS
 

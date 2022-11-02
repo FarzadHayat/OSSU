@@ -36,7 +36,39 @@ class ProblemSet5NewsStory(unittest.TestCase):
         story = NewsStory('test guid', 'test title', 
                           'test description', 'test link', datetime.now())
         self.assertEqual(type(story.get_pubdate()), datetime)
-        
+
+""" PhaseTrigger tests """
+# my_trigger = PhraseTrigger('purple cow')
+# good_texts = [
+#     'PURPLE COW',
+#     'The purple cow is soft and cuddly.',
+#     'The farmer owns a really PURPLE cow.',
+#     'Purple!!! Cow!!!',
+#     'purple@#$%cow',
+#     'Did you see a purple     cow?'
+# ]
+# bad_texts = [
+#     'Purple cows are cool!',
+#     'The purple blob over there is a cow.',
+#     'How now brown cow.',
+#     'Cow!!! Purple!!!',
+#     'purplecowpurplecowpurplecow'
+# ]
+# print("Good texts:")
+# for i,text in enumerate(good_texts):
+#     print(i+1, my_trigger.is_phrase_in(text) == True)
+# print("")
+# print("Bad tests:")
+# for i,text in enumerate(bad_texts):
+#     print(i+1, my_trigger.is_phrase_in(text) == False)
+
+""" TitleTrigger tests """
+# cuddly = NewsStory('', 'The purple cow is soft and cuddly.', '', '', datetime.now())
+# s1 = TitleTrigger('PURPLE COW')
+# s2  = TitleTrigger('purple cow')
+# for trig in [s1, s2]:
+#     print(trig.evaluate(cuddly))
+
 class ProblemSet5(unittest.TestCase):
     def setUp(self):
         class TrueTrigger:
