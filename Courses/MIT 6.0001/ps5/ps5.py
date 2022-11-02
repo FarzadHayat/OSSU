@@ -79,7 +79,7 @@ class NewsStory(object):
             get_link(self)
                 returns self.link
             
-            get pubdate
+            get_pubdate(self)
                 returns self.pubdate
         """
         self.guid = guid
@@ -233,14 +233,66 @@ class DescriptionTrigger(PhraseTrigger):
 # TIME TRIGGERS
 
 # Problem 5
-# TODO: TimeTrigger
-# Constructor:
-#        Input: Time has to be in EST and in the format of "%d %b %Y %H:%M:%S".
-#        Convert time from string to a datetime before saving it as an attribute.
+class TimeTrigger(Trigger):
+    """ The TimeTrigger abstract class is a subclass of the Trigger class. """
+    def __init__(self, time_string):
+        """
+        Creates a new TimeTrigger object.
+        
+        Input: Time has to be in EST and in the format of "%d %b %Y %H:%M:%S".
+        Convert time from string to a datetime before saving it as an attribute.
+
+        Attributes:
+            self.time (datetime)
+        """
+        self.time = datetime.strptime(time_string, "%d %b %Y %H:%M:%S").replace(tzinfo=pytz.timezone("EST"))
 
 # Problem 6
-# TODO: BeforeTrigger and AfterTrigger
+class BeforeTrigger(TimeTrigger):
+    """ The BeforeTrigger class triggers if a a story was published before a given date and time. """
+    def __init__(self, time_string):
+        """
+        Creates a new BeforeTrigger object.
+        
+        Attributes:
+            self.time (datetime)
+        
+        Methods:
+            evaluate(self, story)
+                returns True/False
+        """
+        super().__init__(time_string)
+    
+    def evaluate(self, story):
+        """
+        Evaluates whether the given story was published strictly before self.time.
+        
+        returns True/False
+        """
+        return self.time > story.get_pubdate().replace(tzinfo=pytz.timezone("EST"))
 
+class AfterTrigger(TimeTrigger):
+    """ The AfterTrigger class triggers if a a story was published after a given date and time. """
+    def __init__(self, time_string):
+        """
+        Creates a new AfterTrigger object.
+        
+        Attributes:
+            self.time (datetime)
+        
+        Methods:
+            evaluate(self, story)
+                returns True/False
+        """
+        super().__init__(time_string)
+    
+    def evaluate(self, story):
+        """
+        Evaluates whether the given story was published strictly after self.time.
+        
+        returns True/False
+        """
+        return self.time < story.get_pubdate().replace(tzinfo=pytz.timezone("EST"))
 
 # COMPOSITE TRIGGERS
 
