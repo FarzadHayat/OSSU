@@ -413,10 +413,13 @@ def filter_stories(stories, triggerlist):
 
     Returns: a list of only the stories for which a trigger in triggerlist fires.
     """
-    # TODO: Problem 10
-    # This is a placeholder
-    # (we're just returning all the stories, with no filtering)
-    return stories
+    filtered = []
+    for story in stories:
+        for trigger in triggerlist:
+            if trigger.evaluate(story):
+                filtered.append(story)
+                break
+    return filtered
 
 
 
@@ -440,13 +443,47 @@ def read_trigger_config(filename):
         if not (len(line) == 0 or line.startswith('//')):
             lines.append(line)
 
-    # TODO: Problem 11
-    # line is the list of lines that you need to parse and for which you need
-    # to build triggers
-
-    print(lines) # for now, print it so you see what it contains!
-
-
+    # create empty dictionary to contain the (trig name -> trig object) mappings
+    trig_dict = dict()
+    # create empty list to contain the trigger objects
+    triggerlist = []
+    # loop through the lines:
+    for line in lines:
+        # split line into elements
+        elements = line.split(',')
+        # if the first element is ADD:
+        if elements[0] == 'ADD':
+            # add the rest of the elements to the trigger list
+            for var_name in elements[1:]:
+                triggerlist.append(trig_dict[var_name])
+        # else:
+        else:
+            # separate the elements into variables
+            var_name = elements[0]
+            trig_name = elements[1]
+            args = elements[2:]
+            # match case the trigger name to the corresponding trigger type.
+            # create an instance of the trigger type with the appropriate args
+            # and add it to the trigger dictionary using the given variable name.
+            match trig_name:
+                case 'TITLE':
+                    trig_dict[var_name] = TitleTrigger(args[0])
+                case 'DESCRIPTION':
+                    trig_dict[var_name] = DescriptionTrigger(args[0])
+                case 'BEFORE':
+                    trig_dict[var_name] = BeforeTrigger(args[0])
+                case 'AFTER':
+                    trig_dict[var_name] = AfterTrigger(args[0])
+                case 'NOT':
+                    trig_dict[var_name] = NotTrigger(trig_dict[args[0]])
+                case 'AND':
+                    trig_dict[var_name] = AndTrigger(trig_dict[args[0]], trig_dict[args[1]])
+                case 'OR':
+                    trig_dict[var_name] = OrTrigger(trig_dict[args[0]], trig_dict[args[1]])
+                case _:
+                    return "Invalid Trigger type!"
+    # return the trigger list
+    return triggerlist
 
 SLEEPTIME = 120 #seconds -- how often we poll
 
@@ -461,8 +498,7 @@ def main_thread(master):
         triggerlist = [t1, t4]
 
         # Problem 11
-        # TODO: After implementing read_trigger_config, uncomment this line 
-        # triggerlist = read_trigger_config('triggers.txt')
+        triggerlist = read_trigger_config('triggers.txt')
         
         # HELPER CODE - you don't need to understand this!
         # Draws the popup window that displays the filtered stories
