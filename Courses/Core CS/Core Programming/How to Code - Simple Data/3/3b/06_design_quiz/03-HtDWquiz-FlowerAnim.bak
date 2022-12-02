@@ -61,7 +61,7 @@
 
 (define (main f)
   (big-bang f
-            (on-tick next-fl)        ; Flower -> Flower
+            (on-tick next-fl)      ; Flower -> Flower
             (to-draw render-fl)      ; Flower -> Image
             (on-mouse handle-mouse))); Flower MouseEvent -> Flower
 
