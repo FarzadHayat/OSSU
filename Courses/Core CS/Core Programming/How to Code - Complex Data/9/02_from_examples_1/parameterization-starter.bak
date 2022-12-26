@@ -1,7 +1,13 @@
 ;; The first three lines of this file were inserted by DrRacket. They record metadata
 ;; about the language level of this file in a form that our tools can easily process.
-#reader(lib "htdp-intermediate-reader.ss" "lang")((modname parameterization-v2) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
-;; parameterization-v2.rkt
+#reader(lib "htdp-intermediate-reader.ss" "lang")((modname parameterization-starter) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
+;; parameterization-starter.rkt
+
+(* pi (sqr 4)) ;area of circle radius 4
+(* pi (sqr 6)) ;area of circle radius 6
+
+
+;; ====================
 
 ;; ListOfString -> Boolean
 ;; produce true if los includes "UBC"
@@ -12,7 +18,14 @@
 
 ;(define (contains-ubc? los) false) ;stub
 
-(define (contains-ubc? los) (contains? "UBC" los))
+;<template from ListOfString>
+
+(define (contains-ubc? los)
+  (cond [(empty? los) false]
+        [else
+         (if (string=? (first los) "UBC")
+             true
+             (contains-ubc? (rest los)))]))
 
 ;; ListOfString -> Boolean
 ;; produce true if los includes "McGill"
@@ -23,22 +36,14 @@
 
 ;(define (contains-mcgill? los) false) ;stub
 
-(define (contains-mcgill? los) (contains? "McGill" los))
+;<template from ListOfString>
 
-;; produce true if los includes s
-(check-expect (contains? "UBC" empty) false)
-(check-expect (contains? "UBC" (cons "McGill" empty)) false)
-(check-expect (contains? "UBC" (cons "UBC" empty)) true)
-(check-expect (contains? "UBC" (cons "McGill" (cons "UBC" empty))) true)
-(check-expect (contains? "UBC" (cons "UBC" (cons "McGill" empty))) true)
-(check-expect (contains? "Toronto" (cons "UBC" (cons "McGill" empty))) false)
-
-(define (contains? s los)
+(define (contains-mcgill? los)
   (cond [(empty? los) false]
         [else
-         (if (string=? (first los) s)
+         (if (string=? (first los) "McGill")
              true
-             (contains? s (rest los)))]))
+             (contains-mcgill? (rest los)))]))
 
 
 ;; ====================
@@ -50,7 +55,13 @@
 
 ;(define (squares lon) empty) ;stub
 
-(define (squares lon) (map2 sqr lon))
+;<template from ListOfNumber>
+
+(define (squares lon)
+  (cond [(empty? lon) empty]
+        [else
+         (cons (sqr (first lon))
+               (squares (rest lon)))]))
 
 ;; ListOfNumber -> ListOfNumber
 ;; produce list of sqrt of every number in lon
@@ -59,19 +70,13 @@
 
 ;(define (square-roots lon) empty) ;stub
 
-(define (square-roots lon) (map2 sqrt lon))
+;<template from ListOfNumber>
 
-;; given fn and (list n0 n1 ...) produce (list (fn n0) (fn n1) ...)
-(check-expect (map2 sqr empty) empty)
-(check-expect (map2 sqr (list 2 4)) (list 4 16))
-(check-expect (map2 sqrt (list 16 9)) (list 4 3))
-(check-expect (map2 abs (list 2 -3 4)) (list 2 3 4))
-
-(define (map2 fn lon)
+(define (square-roots lon)
   (cond [(empty? lon) empty]
         [else
-         (cons (fn (first lon))
-               (map2 fn (rest lon)))]))
+         (cons (sqrt (first lon))
+               (square-roots (rest lon)))]))
 
 
 ;; ====================
@@ -83,7 +88,15 @@
 
 ;(define (positive-only lon) empty) ;stub
 
-(define (positive-only lon) (filter2 positive? lon))
+;<template from ListOfNumber>
+
+(define (positive-only lon)
+  (cond [(empty? lon) empty]
+        [else
+         (if (positive? (first lon))
+             (cons (first lon)
+                   (positive-only (rest lon)))
+             (positive-only (rest lon)))]))
 
 
 ;; ListOfNumber -> ListOfNumber
@@ -93,18 +106,12 @@
 
 ;(define (negative-only lon) empty) ;stub
 
-(define (negative-only lon) (filter2 negative? lon))
+;<template from ListOfNumber>
 
-;; given pred and lon produce list with only the elements
-;; for which pred produces true
-(check-expect (filter2 pred empty) empty)
-(check-expect (filter2 positive? (list 1 -2 3 -4)) (list 1 3))
-(check-expect (filter2 negative? (list 1 -2 3 -4)) (list -2 -4))
-
-(define (filter2 pred lon)
+(define (negative-only lon)
   (cond [(empty? lon) empty]
         [else
-         (if (pred (first lon))
+         (if (negative? (first lon))
              (cons (first lon)
-                   (filter2 pred (rest lon)))
-             (filter2 pred (rest lon)))]))
+                   (negative-only (rest lon)))
+             (negative-only (rest lon)))]))
