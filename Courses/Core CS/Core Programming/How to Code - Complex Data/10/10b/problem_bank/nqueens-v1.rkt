@@ -1,3 +1,6 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname nqueens-v1) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 (require spd/tags)
 
 ;; nqueens-v1.rkt
@@ -21,7 +24,7 @@
 ;; interp. the positions of the queens that have been placed on the board
 (define BD1 empty)           ;no queens placed
 (define BD2 (list 0))        ;one queen in upper left corner
-(define BD3 (list 14 8 7 1)) ;a solution to 4x4 puzzle
+(define BD3 (list 14 8 7 1)) ;a solution to 4x4 puzzle 
 
 
 
@@ -56,8 +59,8 @@
 
 
 
-
-
+          
+          
           ;; Position Position -> Boolean
           ;; produce true if queens at position a and b attack each other
           (define (attack? pa pb)
@@ -69,11 +72,12 @@
                   (= y1 y2)                           ;same column
                   (= (/ (- y2 y1) (- x2 x1))  1)      ;same slope  1 diagonal
                   (= (/ (- y2 y1) (- x2 x1)) -1))))   ;same slope -1 diagonal
-
-
+          
+          
           ;; Pos -> Natural[0, N)
           ;; produce the row or column number for the given position
           (define (pos-x p) (remainder p N))
           (define (pos-y p) (quotient  p N))]
-
+    
     false))
+

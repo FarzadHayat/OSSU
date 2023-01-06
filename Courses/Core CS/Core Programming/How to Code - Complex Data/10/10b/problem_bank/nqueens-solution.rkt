@@ -1,3 +1,6 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname nqueens-solution) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 (require spd/tags)
 
 ;; nqueens-solution.rkt
@@ -21,7 +24,7 @@
 ;; interp. the positions of the queens that have been placed on the board
 (define BD1 empty)           ;no queens placed
 (define BD2 (list 0))        ;one queen in upper left corner
-(define BD3 (list 14 8 7 1)) ;a solution to 4x4 puzzle
+(define BD3 (list 14 8 7 1)) ;a solution to 4x4 puzzle 
 
 
 
@@ -50,26 +53,26 @@
 (@template encapsulated backtracking genrec arb-tree)
 
 
-(define (nqueens N)
+(define (nqueens N)          
   ;; Termination argument:
   ;; Trivial cases:
   ;;   bd is solved or there are no valid next boards left to explore
-  ;;
+  ;; 
   ;; Reduction step:
   ;;   (fn-for-lobd (next-boards bd)) in other words go explore the
   ;;   valid next boards of this board
-  ;;
-  ;; Since board is finite, and each board is explored at most once,
+  ;; 
+  ;; Since board is finite, and each board is explored at most once, 
   ;; search will definitely terminate. (But the search space does grow
   ;; really fast!)
-
+  
   (local [;; Board -> Board or false
           ;; do backtracking search of generated arb-arity tree of boards
           (define (fn-for-bd bd)
             (if (solved? bd)
                 bd
                 (fn-for-lobd (next-boards bd))))
-
+          
           (define (fn-for-lobd lobd)
             (cond [(empty? lobd) false]
                   [else
@@ -77,16 +80,16 @@
                      (if (not (false? try))
                          try
                          (fn-for-lobd (rest lobd))))]))
-
-
+          
+          
           ;; Board -> Boolean
           ;; Produce true if board has N queens.
           ;; ASSUMPTION: Board is valid.
           (define (solved? bd) (= (length bd) N))
 
-
+          
           ;; Board -> (listof Board)
-          ;; produce next valid boards by adding a queen at every position
+          ;; produce next valid boards by adding a queen at every position 
           ;; that does not attack an existing queen
           ;; (@template fn-composition use-abstract-fn)
           (define (next-boards bd)
@@ -99,24 +102,24 @@
             (andmap (lambda (existing-queen)
                       (not (attack? existing-queen p)))
                     bd))
-
-
+          
+          
           ;; Board -> (listof Board)
-          ;; produce next valid boards by adding a queen at every new position
+          ;; produce next valid boards by adding a queen at every new position 
           ;;   - comes after all existing queen positions (not required)
           ;;   - does not attack any existing queens
           ;; (@template encapsulated fn-composition use-abstract-fn)
           ;(define (next-boards bd)
           ;  (local [(define max-so-far (foldr max -1 bd))]       ;not required
-          ;            (map (lambda (p2) (cons p2 bd))
+          ;            (map (lambda (p2) (cons p2 bd)) 
           ;                 (filter (lambda (p2)
           ;                           (and (> p2 max-so-far)      ;not required
-          ;                                (andmap (lambda (p1)
+          ;                                (andmap (lambda (p1)     
           ;                                          (not (attack? p2 p1)))
           ;                                        bd)))
           ;                         (build-list (sqr N) identity)))))
-
-
+                    
+          
           ;; Position Position -> Boolean
           ;; produce true if queens at position a and b attack each other
           (define (attack? pa pb)
@@ -128,11 +131,12 @@
                   (= y1 y2)                           ;same column
                   (= (/ (- y2 y1) (- x2 x1))  1)      ;same slope  1 diagonal
                   (= (/ (- y2 y1) (- x2 x1)) -1))))   ;same slope -1 diagonal
-
-
+          
+          
           ;; Pos -> Natural[0, N)
           ;; produce the row or column number for the given position
           (define (pos-x p) (remainder p N))
           (define (pos-y p) (quotient  p N))]
-
+    
     (fn-for-bd empty)))
+

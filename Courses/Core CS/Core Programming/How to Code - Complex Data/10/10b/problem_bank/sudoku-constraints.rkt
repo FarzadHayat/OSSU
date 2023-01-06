@@ -1,3 +1,6 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-advanced-reader.ss" "lang")((modname sudoku-constraints) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #t #t none #f () #f)))
 (require spd/tags)
 (require racket/function);for compose and curry
 
@@ -57,7 +60,7 @@
 
 (@HtDD Unit)
 ;; Unit is (listof Pos) of length 9
-;; interp.
+;; interp. 
 ;;  The position of every square in a unit. There are
 ;;  27 of these for the 9 rows, 9 columns and 9 boxes.
 
@@ -69,7 +72,7 @@
 (define B ALL-VALS) ;B stands for blank
 
 
-(define BD1
+(define BD1 
   (list B B B B B B B B B
         B B B B B B B B B
         B B B B B B B B B
@@ -80,7 +83,7 @@
         B B B B B B B B B
         B B B B B B B B B))
 
-(define BD2
+(define BD2 
   (list 1 2 3 4 5 6 7 8 9  ;Note that these boards don't
         B B B B B B B B B  ;have the appropriately reduced
         B B B B B B B B B  ;constraint sets. They have to
@@ -91,7 +94,7 @@
         B B B B B B B B B
         B B B B B B B B B))
 
-(define BD3
+(define BD3 
   (list 1 B B B B B B B B
         2 B B B B B B B B
         3 B B B B B B B B
@@ -129,8 +132,8 @@
         B 1 B B 5 B 6 B B
         B B 4 9 B B B B B
         B 9 B B B 7 5 B B
-        1 8 B 2 B B B B B
-        B B B B B 6 B B B
+        1 8 B 2 B B B B B 
+        B B B B B 6 B B B 
         B B 3 B B B B B 8
         B 6 B B 8 B B B 9
         B B 8 B 7 B B 3 1))
@@ -147,9 +150,9 @@
         4 5 8 6 7 9 2 3 1))
 
 (define BD6                ;hardest ever? (Dr Arto Inkala)
-  (list B B 5 3 B B B B B
+  (list B B 5 3 B B B B B 
         8 B B B B B B 2 B
-        B 7 B B 1 B 5 B B
+        B 7 B B 1 B 5 B B 
         4 B B B B 5 3 B B
         B 1 B B 7 B B B 6
         B B 3 2 B B B 8 B
@@ -194,19 +197,19 @@
 (check-expect (solve BD4) BD4s)
 (check-expect (solve BD5) BD5s)
 
-(@template genrec arb-tree encapsulated)
+(@template genrec arb-tree encapsulated)           
 
 (define (solve bd)
   ;;Termination argument:
   ;; trivial case:  checked board has no blanks
   ;; reduction step: fill blank with all possible valid values
   ;; argument: the reduction step fills the board by one, so
-  ;;           eventually the board will be full.
+  ;;           eventually the board will be full. 
   (local [(define (solve/one bd)
             (if (solved? bd)
-                bd
+                bd 
                 (solve/list (next-boards bd))))
-
+          
           (define (solve/list lobd)
             (cond [(empty? lobd) false]
                   [else
@@ -214,20 +217,20 @@
                      (if (not (false? try))
                          try
                          (solve/list (rest lobd))))]))
-
+          
           (define (next-boards bd)
             (local [(define blank (find-blank bd))  ;position of blank
                     (define cset  (bref bd blank))] ;cset of blank
               (map (curry bsubst bd blank) cset)))] ;valid boards from cset
-
+            
     (solve/one (setup-csets bd))))
 
 ;; In the version without constraint propagation, next-boards is:
-;;
+;;          
 ;;          (define (next-boards bd)
 ;;            (local [(define blank (find-blank bd))] ;position of blank
 ;;              (filter valid-board?                  ;valid next boards
-;;                      (map (curry bsubst bd blank)
+;;                      (map (curry bsubst bd blank) 
 ;;                           ALL-VALS))))
 ;;
 ;; and find-blank just picks the first blank.
@@ -255,14 +258,14 @@
   ;; Accumulators na la are the position and length of the
   ;; blank with the fewest number of possible values so far.
   (local [(define (scan n vals na la)
-            (cond [(empty? vals) na]
+            (cond [(empty? vals) na]                  
                   [else
-                   (local [(define v (first vals))]
+                   (local [(define v (first vals))]                     
                      (if (and (not (number? v))
                               (< (length v) la))
                          (scan (add1 n) (rest vals) n (length v))
                          (scan (add1 n) (rest vals) na la)))]))]
-
+    
     (scan 0 bd 0 10)))
 
 (@signature Board -> Boolean)
@@ -279,7 +282,7 @@
 
 (define (valid-board? bd)
   (local [(define (check-units lou)
-            (andmap check-unit lou))
+            (andmap check-unit lou))     
           (define (check-unit u)
             (no-duplicates? (map (curry bref bd) u)))
           (define (no-duplicates? vals)
@@ -314,30 +317,30 @@
                 (list 1 X X  X X X  X X X
                       X X X  B B B  B B B
                       X X X  B B B  B B B
-
-                      X B B  B B B  B B B
-                      X B B  B B B  B B B
-                      X B B  B B B  B B B
-
+                      
+                      X B B  B B B  B B B                      
+                      X B B  B B B  B B B                      
+                      X B B  B B B  B B B 
+                      
                       X B B  B B B  B B B
                       X B B  B B B  B B B
                       X B B  B B B  B B B)))
 
 (@template Board encapsulated)
 
-(define (bsubst bd p0 nv)
+(define (bsubst bd p0 nv) 
   (local [(define (scan p vals)
             (cond [(empty? vals) empty]
                   [else
                    (cons (val-for-p p (first vals))
                          (scan (add1 p) (rest vals)))]))
-
+          
           (define (val-for-p p ov)
             (cond [(number? ov)      ov]
                   [(= p p0)          nv]
                   [(same-unit? p p0) (remove nv ov)]
                   [else ov]))]
-
+    
     (scan 0 bd)))
 
 
@@ -346,7 +349,7 @@
 (check-expect (setup-csets BD2)
               (local [(define X (list 4 5 6 7 8 9))
                       (define Y (list 1 2 3 7 8 9))
-                      (define Z (list 1 2 3 4 5 6))
+                      (define Z (list 1 2 3 4 5 6))                        
                       (define A (remove 1 ALL-VALS))
                       (define B (remove 2 ALL-VALS))
                       (define C (remove 3 ALL-VALS))
@@ -356,15 +359,15 @@
                       (define G (remove 7 ALL-VALS))
                       (define H (remove 8 ALL-VALS))
                       (define I (remove 9 ALL-VALS))]
-
+                
                 (list 1 2 3  4 5 6  7 8 9
                       X X X  Y Y Y  Z Z Z
                       X X X  Y Y Y  Z Z Z
-
+                      
                       A B C  D E F  G H I
                       A B C  D E F  G H I
                       A B C  D E F  G H I
-
+                      
                       A B C  D E F  G H I
                       A B C  D E F  G H I
                       A B C  D E F  G H I)))
@@ -405,10 +408,13 @@
 
 (define (same-unit? p p0)
   (local [(define r (pos->r p))
-          (define c (pos->c p))
+          (define c (pos->c p))                    
           (define r0 (pos->r p0))
           (define c0 (pos->c p0))]
     (or (= r0 r)
         (= c0 c)
         (and (= (quotient r0 3) (quotient r 3))
              (= (quotient c0 3) (quotient c 3))))))
+
+
+

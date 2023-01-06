@@ -1,3 +1,6 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-intermediate-lambda-reader.ss" "lang")((modname maze-2w-solution) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #f #t none #f () #f)))
 ;; maze-solution.rkt
 
 ;; Solve simple square mazes
@@ -26,7 +29,7 @@
 (define M1
   (list O W W W W
         O O W O O
-        W O W W W
+        W O W W W 
         O O W W W
         O O O O O))
 
@@ -41,7 +44,7 @@
   (list O O O O O
         O W W W W
         O W W W W
-        O W W W W
+        O W W W W 
         O O O O O))
 
 (define M4
@@ -72,7 +75,7 @@
 ;; assume maze has a true at least in the upper left
 (check-expect (solvable? M1) #t)
 (check-expect (solvable? M2) #t)
-(check-expect (solvable? M3) #t)
+(check-expect (solvable? M3) #t) 
 (check-expect (solvable? M4) #f)
 
 ;<template as backtracking search over generated arbitrary-arity tree>
@@ -82,7 +85,7 @@
             (cond [(solved? p m) true]
                   [else
                    (solve/lop (next-ps m p))]))
-
+          
           (define (solve/lop lop)
             (cond [(empty? lop) false]
                   [else
@@ -90,7 +93,7 @@
                      (if (not (false? try))
                          try
                          (solve/lop (rest lop))))]))]
-
+    
     (solve/one (make-pos 0 0))))
 
 ;; Pos -> Boolean
@@ -121,15 +124,15 @@
                     (define y (pos-y p))]
               (list (make-pos (add1 x)      y)
                     (make-pos       x (add1 y)))))
-
+          
           (define (valid-only m lop)
             (filter valid? lop))
-
+          
           (define (valid? p)
             (and (<= 0 (pos-x p) (- SIZE 1))
                  (<= 0 (pos-y p) (- SIZE 1))
                  (mref m p)))]
-
+    
     (valid-only m (new-ps p))))
 
 
@@ -142,7 +145,7 @@
   (local [(define s (sqrt (length m))) ;each side length
           (define x (pos-x p))
           (define y (pos-y p))]
-
+    
     (list-ref m (+ x (* y s)))))
 
 
@@ -164,15 +167,15 @@
 (define (render m)
   (local [(define SIZE (sqrt (length m)))          ;for 4x4 this is 4
           (define IDXS (build-list SIZE identity)) ;for 4x4 this is (list 0 1 2 3)
-
+          
           (define CELL-SIZE 30)
           (define T (square CELL-SIZE "solid" "light gray"))
           (define F (square CELL-SIZE "solid" "black"))
-
+          
           (define (cv->image cv)
             (cond [cv   OPEN]
                   [else WALL]))]
-
+    
     (foldr (lambda (i img)
              (above (foldr (lambda (j img)
                              (beside (cv->image (list-ref m (+ (* i SIZE) j)))
