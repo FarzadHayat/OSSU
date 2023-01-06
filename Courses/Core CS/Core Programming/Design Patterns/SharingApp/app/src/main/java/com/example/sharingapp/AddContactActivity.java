@@ -2,6 +2,8 @@ package com.example.sharingapp;
 
 import android.content.Context;
 import androidx.appcompat.app.AppCompatActivity;
+
+import android.content.Intent;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.EditText;
@@ -11,11 +13,16 @@ import android.widget.EditText;
  */
 public class AddContactActivity extends AppCompatActivity {
 
-    private ContactList contact_list = new ContactList();
+    private ContactList contactList = new ContactList();
+    private ContactListController contactListController = new ContactListController(contactList);
+
     private Context context;
 
     private EditText username;
     private EditText email;
+
+    private String username_str;
+    private String email_str;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -26,46 +33,52 @@ public class AddContactActivity extends AppCompatActivity {
         email = (EditText) findViewById(R.id.email);
 
         context = getApplicationContext();
-        contact_list.loadContacts(context);
+        contactListController.loadContacts(context);
     }
 
     public void saveContact(View view) {
 
-        String username_str = username.getText().toString();
-        String email_str = email.getText().toString();
+        username_str = username.getText().toString();
+        email_str = email.getText().toString();
 
-        if (username_str.equals("")) {
-            username.setError("Empty field!");
-            return;
-        }
-
-        if (email_str.equals("")) {
-            email.setError("Empty field!");
-            return;
-        }
-
-        if (!email_str.contains("@")){
-            email.setError("Must be an email address!");
-            return;
-        }
-
-        if (!contact_list.isUsernameAvailable(username_str)){
-            username.setError("Username already taken!");
+        if (!validateInput()) {
             return;
         }
 
         Contact contact = new Contact(username_str, email_str, null);
 
         // Add contact
-        AddContactCommand add_contact_command = new AddContactCommand(contact_list, contact,
-                context);
-        add_contact_command.execute();
-        boolean success = add_contact_command.isExecuted();
+        boolean success = contactListController.addContact(contact, context);
         if (!success){
             return;
         }
 
         // End AddContactActivity
         finish();
+    }
+
+    public boolean validateInput() {
+
+        if (username_str.equals("")) {
+            username.setError("Empty field!");
+            return false;
+        }
+
+        if (email_str.equals("")) {
+            email.setError("Empty field!");
+            return false;
+        }
+
+        if (!email_str.contains("@")){
+            email.setError("Must be an email address!");
+            return false;
+        }
+
+        if (!contactListController.isUsernameAvailable(username_str)){
+            username.setError("Username already taken!");
+            return false;
+        }
+
+        return true;
     }
 }

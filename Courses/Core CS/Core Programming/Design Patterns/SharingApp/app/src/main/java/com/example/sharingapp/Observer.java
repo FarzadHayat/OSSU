@@ -1,2 +1,8 @@
-package com.example.sharingapp;public interface Observer {
+package com.example.sharingapp;
+
+/**
+ * Observer Interface
+ */
+public interface Observer {
+    public void update();
 }

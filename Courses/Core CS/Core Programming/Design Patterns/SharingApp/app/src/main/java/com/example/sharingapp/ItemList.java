@@ -17,7 +17,7 @@ import java.util.ArrayList;
 /**
  * ItemList class
  */
-public class ItemList {
+public class ItemList extends Observable {
 
     private static ArrayList<Item> items;
     private String FILENAME = "items.sav";
@@ -28,6 +28,7 @@ public class ItemList {
 
     public void setItems(ArrayList<Item> item_list) {
         items = item_list;
+        notifyObservers();
     }
 
     public ArrayList<Item> getItems() {
@@ -36,10 +37,12 @@ public class ItemList {
 
     public void addItem(Item item) {
         items.add(item);
+        notifyObservers();
     }
 
     public void deleteItem(Item item) {
         items.remove(item);
+        notifyObservers();
     }
 
     public Item getItem(int index) {
@@ -62,7 +65,6 @@ public class ItemList {
     }
 
     public void loadItems(Context context) {
-
         try {
             FileInputStream fis = context.openFileInput(FILENAME);
             InputStreamReader isr = new InputStreamReader(fis);
@@ -76,6 +78,7 @@ public class ItemList {
         } catch (IOException e) {
             items = new ArrayList<Item>();
         }
+        notifyObservers();
     }
 
     public boolean saveItems(Context context) {
@@ -92,13 +95,10 @@ public class ItemList {
         } catch (IOException e) {
             e.printStackTrace();
             return false;
-        }
-        return true;
+        } return true;
     }
 
-
     public ArrayList<Contact> getActiveBorrowers() {
-
         ArrayList<Contact> active_borrowers = new ArrayList<Contact>();
         for (Item i : items) {
             Contact borrower = i.getBorrower();
@@ -109,9 +109,9 @@ public class ItemList {
         return active_borrowers;
     }
 
-    public ArrayList<Item> filterItemsByStatus(String status){
+    public ArrayList<Item> filterItemsByStatus(String status) {
         ArrayList<Item> selected_items = new ArrayList<>();
-        for (Item i: items) {
+        for (Item i : items) {
             if (i.getStatus().equals(status)) {
                 selected_items.add(i);
             }
@@ -119,6 +119,3 @@ public class ItemList {
         return selected_items;
     }
 }
-
-
-
