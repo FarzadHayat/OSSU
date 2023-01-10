@@ -1,3 +1,6 @@
+;; The first three lines of this file were inserted by DrRacket. They record metadata
+;; about the language level of this file in a form that our tools can easily process.
+#reader(lib "htdp-advanced-reader.ss" "lang")((modname ta-solver-solution) (read-case-sensitive #t) (teachpacks ()) (htdp-settings #(#t constructor repeating-decimal #t #t none #f () #f)))
 ;; ta-solver-solution.rkt
 ;  PROBLEM 1:
 ;
@@ -219,18 +222,18 @@
                (make-assignment UDON 4)
                (make-assignment RAMEN 2)))
 (check-expect (solve NOODLE-TAs (list 1 2 3 4 5)) false)
-#;
-(check-expect (solve QUIZ-TAs-1
-                     (list 1 2 3 4 5 6 7 8 9 10 11 12))
-              false)
-#;
-(check-expect (solve QUIZ-TAs-2
-                     (list 1 2 3 4 5 6 7 8 9 10 11 12))
-              false)
-#;
-(check-expect (solve QUIZ-TAs-3
-                     (list 1 2 3 4 5 6 7 8 9 10 11 12))
-              true)
+
+;(check-expect (solve QUIZ-TAs-1
+;                     (list 1 2 3 4 5 6 7 8 9 10 11 12))
+;              false)
+
+;(check-expect (solve QUIZ-TAs-2
+;                     (list 1 2 3 4 5 6 7 8 9 10 11 12))
+;              false)
+
+;(check-expect (solve QUIZ-TAs-3
+;                     (list 1 2 3 4 5 6 7 8 9 10 11 12))
+;              true)
 ;(define (solve tas slots) empty) ;stub
 
 (define (solve tas slots)
