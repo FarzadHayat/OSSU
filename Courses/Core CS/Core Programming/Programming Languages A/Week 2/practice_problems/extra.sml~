@@ -1,0 +1,103 @@
+
+(* int list -> int *)
+(* 1. Adds integers in list with alternating sign starting with subtract *)
+fun alternate (nums : int list) =
+    let
+	fun helper (nums : int list, is_negative : bool) =
+	    if null nums
+	    then 0
+	    else
+		if is_negative
+		then helper (tl nums, false) - hd nums
+		else helper (tl nums, true) + hd nums;
+    in
+	helper (nums, false)
+    end;
+
+(* int list -> int * int *)
+(* 2. Given non-empty list, produce pair (min, max)
+   of the minimum and maximum of the numbers in the list *)
+fun min_max (nums : int list) =
+    let
+	fun smaller (first : int, second : int) =
+	    if first < second
+	    then first
+	    else second;
+	fun bigger (first : int, second : int) =
+	    if first > second
+	    then first
+	    else second;
+	fun helper (nums : int list, min : int, max : int) =
+	    if null nums
+	    then (min, max)
+	    else helper (tl nums,
+			 smaller(hd nums, min),
+			 bigger(hd nums, max));
+    in
+	helper (tl nums, hd nums, hd nums)
+    end;
+			     
+(* int list -> int list *)
+(* 3. Returns list of partial sums of numbers in list *)
+fun cumsum (nums : int list) =
+    let
+	fun helper (nums : int list, sum : int) =
+	    if null nums
+	    then []
+	    else sum + hd nums :: helper (tl nums, sum + hd nums);
+    in
+	helper (nums, 0)
+    end;
+
+(* string option -> string *)
+(* 4. Return string "Hello there, ...!" where dots is the value of name
+   if name is SOME; or "you" if name is NONE *)
+fun greeting (name : string option) =
+    let
+	val name_string = if isSome name then valOf name else "you";
+    in
+	"Hello there, " ^ name_string ^ "!"
+    end;
+
+(* int list * int list -> int list *)
+(* 5. Repeat the integers in the lst1 according to the numbers indicated in lst2
+   ASSUME: lst2 contains only non-negative integers *)
+fun repeat (lst1 : int list, lst2 : int list) =
+    let
+	fun repeat_n_times (num : int, n : int) =
+	    if n = 0
+	    then []
+	    else num :: repeat_n_times (num, n - 1);
+    in
+	if null lst1 orelse null lst2
+	then []
+	else repeat_n_times (hd lst1, hd lst2) @ repeat (tl lst1, tl lst2)
+    end;
+
+(* int option * int option -> int option *)
+(* 6. Return sum option of two int options if both are present;
+   or NONE if at least one of the two arguments is NONE *)
+fun addOpt (num1 : int option, num2 : int option) =
+    if isSome num1 andalso isSome num2
+    then SOME (valOf num1 + valOf num2)
+    else NONE;
+
+(* int option list -> int option *)
+(* 7. Returns sum of adding all the integer values in option list
+   If list does not contain any SOME in it (they are all NONE or
+   list is empty), then return NONE *)
+fun addAllOpt (nums : int option list) =
+    let
+	fun helper (nums : int option list) =
+	    if null nums
+	    then 0
+	    else if isSome (hd nums)
+	    then valOf (hd nums) + helper (tl nums)
+	    else helper (tl nums);
+	fun all_none_or_empty (nums : int option list) =
+	    null nums orelse (hd nums = NONE andalso all_none_or_empty (tl nums));
+    in
+	if all_none_or_empty (nums)
+	then NONE
+	else SOME (helper nums)
+    end;
