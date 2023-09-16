@@ -1,0 +1,132 @@
+
+fun same_string(s1 : string, s2 : string) =
+    s1 = s2;
+
+(* 1a. return NONE if the string is not in the list, else return SOME lst where
+       lst is identical to the argument list except the string is not in it *)
+fun all_except_option (str, lst) = (* string * string list -> string list option *)
+    let fun aux (lst, acc) =
+	    case lst of
+		[] => NONE
+	      | first::rest => if same_string (first, str)
+				    then SOME (acc @ rest)
+				    else aux (rest, acc @ [first]);
+    in	aux (lst, []) end;
+
+(* 1b. return union of all lists with s in them but don't include s in the result *)
+fun get_substitutions1 (lst, s) = (* string list list * string -> string list *)
+    case lst of
+	[] => []
+      | first::rest => case all_except_option (s, first) of
+			   NONE => get_substitutions1 (rest, s)
+			 | SOME subs => subs @ get_substitutions1 (rest, s);
+
+(* 1c. tail recursive version of get_substitutions1 *)
+fun get_substitutions2 (lst, s) = (* string list list * string -> string list *)
+    let fun aux (lst, acc) =
+	    case lst of
+		[] => acc
+	      | first::rest => case all_except_option (s, first) of
+				   NONE => aux (rest, acc)
+				 | SOME subs => aux (rest, acc @ subs)
+    in aux (lst, []) end;
+
+(* 1d. return list of full names producable by substituting for the first name *)
+fun similar_names (lst, name) = (* string list list * {first:string, middle:'a, last:'b} ->
+				   	       {first:string, middle:'a, last:'b} list *)
+    let val {first=f,middle=m,last=l} = name;
+	val subs = get_substitutions2 (lst, f);
+	fun aux (xs, acc) =
+	    case xs of
+		[] => acc
+	      | x::xs' => aux (xs', acc @ [{first=x,middle=m,last=l}])
+    in
+	aux (subs, [name])
+    end;
+
+(* you may assume that Num is always used with values 2, 3, ..., 10
+   though it will not really come up *)
+datatype suit = Clubs | Diamonds | Hearts | Spades;
+datatype rank = Jack | Queen | King | Ace | Num of int;
+type card = suit * rank;
+
+datatype color = Red | Black;
+datatype move = Discard of card | Draw;
+
+exception IllegalMove;
+
+(* 2a. return card color *)
+fun card_color card = (* card -> color *)
+    case card of
+	(suit,rank) => if suit=Clubs orelse suit=Spades
+		       then Black
+		       else Red;
+
+(* 2b. return card value *)
+fun card_value (suit,rank) = (* card -> Num of int *)
+    case rank of
+	Num x => x
+      | Ace => 11
+      | _ => 10;
+
+(* 2c. remove first instance of card in card_list if it is present;
+       otherwise raise exception e *)
+fun remove_card (card_list, card, e) = (* card list * card * exn -> card list *)
+    case card_list of
+	[] => raise e
+      | first::rest => if first=card
+		       then rest
+		       else first::remove_card (rest, card, e);
+
+(* 2d. return true if all cards in card_list are the same color; false otherwise *)
+fun all_same_color card_list = (* card list -> bool *)
+    case card_list of
+	[] => true
+      | x::[] => true
+      | x::y::rest => card_color x = card_color y andalso all_same_color (y::rest);
+
+(* 2e. return sum of all card values *)
+fun sum_cards card_list = (* card list -> int *)
+    let fun aux (card_list, acc) =
+	    case card_list of
+		[] => acc
+	      | card::rest => aux (rest, card_value card + acc);
+    in
+	aux (card_list, 0)
+    end;
+
+(* 2f. return score of cards in card_list *)
+fun score (card_list, goal) = (* card list * int -> int *)
+    let val sum = sum_cards card_list;
+	val pre = if sum > goal
+		  then 3 * (sum - goal)
+		  else goal - sum;
+    in
+	if all_same_color card_list
+	then pre div 2
+	else pre
+    end;
+
+(* 2g. return score at the end of the game after processing the moves in order *)
+fun officiate (card_list, move_list, goal) = (* card list * move list * int -> int *)
+    let fun game_over (held_cards) =
+	    score (held_cards, goal);
+	fun aux (card_list, move_list, held_cards) =
+	    case move_list of
+		[] => game_over held_cards
+	      | Discard card::rest => aux (card_list, rest,
+					   remove_card (held_cards, card, IllegalMove))
+	      | Draw::rest => case card_list of
+				  [] => game_over held_cards
+				| c::cs => let val new_hand = c::held_cards
+					   in if sum_cards (new_hand) > goal
+					      then game_over (new_hand)
+					      else aux (cs, rest, new_hand) end;
+    in
+	aux (card_list, move_list, [])
+    end;
+
+(* 3a. like score except each ace can have a value of 1 or 11 and
+       score_challenge always returns the best possible score *)
+(* fun score_challenge (card_list, goal) = 
+    let fun all_scores (card_list, acc) *)

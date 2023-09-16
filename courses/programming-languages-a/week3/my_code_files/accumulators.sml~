@@ -1,0 +1,9 @@
+
+fun sum xs =
+    let fun aux (xs,acc) =
+	    if null xs
+	    then acc
+	    else aux(tl xs,hd xs + acc);
+    in
+	aux (xs,0)
+    end;

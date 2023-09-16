@@ -1,0 +1,23 @@
+
+datatype exp = Constant of int
+	     | Negate   of exp
+	     | Add      of exp * exp
+	     | Multiply of exp * exp;
+
+(* exp -> int *)
+fun max_constant (e : exp) =
+    case e of
+	Constant e => e
+      | Negate e => max_constant e
+      | Add (e1, e2) => let
+	  val m1 = max_constant e1;
+	  val m2 = max_constant e2;
+      in
+	  if m1 > m2 then m1 else m2
+      end
+      | Multiply (e1, e2) let
+	    val m1 = max_constant e1;
+	    val m2 = max_constant e2;
+	in
+	    if m1 > m2 then m1 else m2
+	end;

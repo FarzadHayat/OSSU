@@ -1,0 +1,7 @@
+
+fun nondecreasing xs = (* int list -> bool *)
+    case xs of
+	[] => true
+      | x::xs' => case xs' of
+		      [] => true
+		    | y::ys' => x <= y andalso nondecreasing xs';
