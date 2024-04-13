@@ -37,3 +37,13 @@ val test7 = gardener leaf = leaf;
 val test7 = gardener (node {left=leaf, right=leaf, value=leave_me_alone}) = node {left=leaf, right=leaf, value=leave_me_alone};
 val test7 = gardener (node {left=leaf, right=leaf, value=prune_me}) = leaf;
 val test7 = gardener (node {left=node {left=leaf, right=leaf, value=prune_me}, right=leaf, value=leave_me_alone}) = node {left=leaf, right=leaf, value=leave_me_alone};
+
+val test8_1 = last [] = NONE;
+val test8_1 = last [1] = SOME 1;
+val test8_1 = last [1, 2] = SOME 2;
+val test8_1 = last [1, 2, 3] = SOME 3;
+
+val test8_2 = take ([1], 0) = 1;
+val test8_2 = take ([1, 2, 3], 0) = 1;
+val test8_2 = take ([1, 2, 3], 1) = 2;
+val test8_2 = take ([1, 2, 3], 2) = 3;

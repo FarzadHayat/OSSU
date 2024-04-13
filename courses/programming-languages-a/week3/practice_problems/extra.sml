@@ -50,3 +50,16 @@ fun gardener (t : flag tree) =
         | node {value = v, left = l, right = r} =>
             case v of prune_me => leaf
                     | leave_me_alone => node {value = v, left = gardener l, right = gardener r};
+
+(* 8. Re-implementing various functions provided in the SML standard libraries for lists and options. *)
+fun last (lst : 'a list) =
+    case lst of
+        [] => NONE
+        | [x] => SOME x
+        | x::xs => last xs;
+
+fun take (lst : 'a list, i : int) =
+    case lst of
+        [] => raise Subscript
+        | x::xs => if i = 0 then x else take (xs, i - 1);
+
